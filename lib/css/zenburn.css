@@ -16,25 +16,25 @@ based on dark.css by Ivan Sagalaev
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-tag {
-  color: #e3ceab;
+  color: #db8b00;
 }
 
 .hljs-template-tag {
-  color: #dcdcdc;
+  color: #c9c9c9;
 }
 
 .hljs-number {
-  color: #8cd0d3;
+  color: #00cad4;
 }
 
 .hljs-variable,
 .hljs-template-variable,
 .hljs-attribute {
-  color: #efdcbc;
+  color: #ee9700;
 }
 
 .hljs-literal {
-  color: #efefaf;
+  color: #e7e700;
 }
 
 .hljs-subst {
@@ -47,27 +47,27 @@ based on dark.css by Ivan Sagalaev
 .hljs-selector-class,
 .hljs-section,
 .hljs-type {
-  color: #efef8f;
+  color: #e7e700;
 }
 
 .hljs-symbol,
 .hljs-bullet,
 .hljs-link {
-  color: #dca3a3;
+  color: #dd0000;
 }
 
 .hljs-deletion,
 .hljs-string,
 .hljs-built_in,
 .hljs-builtin-name {
-  color: #cc9393;
+  color: #c70000;
 }
 
 .hljs-addition,
 .hljs-comment,
 .hljs-quote,
 .hljs-meta {
-  color: #7f9f7f;
+  color: #008800;
 }
 
 
