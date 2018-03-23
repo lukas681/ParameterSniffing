@@ -9,6 +9,7 @@ You need to have node.js (and npm) installed
 ```bash
 git clone https://github.com/lukas681/ParameterSniffing
 npm install
+sudo npm install -g yo grunt-cli bower
 grunt serve
 ```
 
