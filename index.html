@@ -42,14 +42,15 @@
 			</section>
 			<section>
 				<!--Slide Two: Agenda -->
-				<h3>Agenda</h3>
+				<h2>Agenda</h2>
+				<hr>
 				<ol>
 					<li>Was ist
 						<b>Parameter Sniffing?</b>
 					</li>
 					<li>Optimierungstechniken
 						<ol>
-							<li>Optimize for</li>
+							<li>Optimierung für typischen Parameter</li>
 							<li>Jede Execution</li>
 							<li>Lokale Variablen</li>
 							<li>Optimize for Unknown</li>
@@ -62,6 +63,7 @@
 				<section>
 					<!-- Explain Param Sniffing -->
 					<h2>Parameter Sniffing</h2>
+					<hr>
 					<aside class="notes">
 						<ul>
 							<li>
@@ -98,42 +100,42 @@ SELECT * FROM Sales.SalesOrderDetail
 WHERE ProductID = @pid
 
 EXEC tst @pid = 897</code></pre>
-				<img src="media/execPlan1.jpg"/>
+					<img src="media/execPlan1.jpg" />
 				</section>
 
 				<section>
-						<!-- Explain Param Sniffing -->
-						<h2>Ausführungsplan</h2>
-						<aside class="notes">
-							<ul>
-								<li>
-	
-								</li>
-							</ul>
-						</aside>
-						<pre><code>
+					<!-- Explain Param Sniffing -->
+					<h2>Ausführungsplan</h2>
+					<aside class="notes">
+						<ul>
+							<li>
+
+							</li>
+						</ul>
+					</aside>
+					<pre><code>
 SELECT COUNT(ProductID) as 'Count', ProductID 'Produkt'
 FROM Sales.SalesOrderDetail
 WHERE ProductID in (870, 897)
 GROUP BY  ProductID				
 						</code></pre>
-						<table>
-							<tr>
-								<th>Count</th>
-								<th>Produkt</th>
-							</tr>
-							<tr>
-								<td>4688</td>
-								<td>870</td>
-							</tr>
-							<tr>
-								<td>2</td>
-								<td>897</td>
-							</tr>
-						</table>
-						
+					<table>
+						<tr>
+							<th>Count</th>
+							<th>Produkt</th>
+						</tr>
+						<tr>
+							<td>4688</td>
+							<td>870</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>897</td>
+						</tr>
+					</table>
+
 				</section>
-			<section>
+				<section>
 					<!-- Explain Param Sniffing -->
 					<h2>Zweiter Befehl</h2>
 					<aside class="notes">
@@ -143,24 +145,38 @@ GROUP BY  ProductID
 							</li>
 						</ul>
 					</aside>
-<pre><code>SET STATISTICS IO ON
+					<pre><code>SET STATISTICS IO ON
 GO
 EXEC tst3 @pid =  870
 GO</code></pre>
-					<img src="media/execPlan2.png"/>
+					<img src="media/execPlan2.png" />
 					<ul>
 						<li>Index Seek gecached</li>
 						<li>Etwa 1000 pages</li>
 						<li>14.000 reads = ~ 14x wie einfacher Table Scan</li>
-						<li><b>Ineffizient!</b></li>
+						<li>
+							<b>Ineffizient!</b>
+						</li>
 					</ul>
 
 				</section>
 			</Section>
 
 			<section>
-					<!-- Explain Param Sniffing -->
+				<section>
+					<!-- Optimization Techiques -->
 					<h2>Optimierungstechniken</h2>
+					<aside class="notes">
+						<ul>
+							<li>
+								Eine Techniken um solche Abfragen zu minimieren
+							</li>
+						</ul>
+					</aside>
+				</section>
+				<section>
+					<!-- Optimize for typical Parameter -->
+					<h2>Optimierung für typischen Parameter</h2>
 					<aside class="notes">
 						<ul>
 							<li>
@@ -174,6 +190,7 @@ GO</code></pre>
 					</ul>
 
 				</section>
+			</section>
 
 			<section>
 				<!-- Fragen -->

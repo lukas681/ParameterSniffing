@@ -71,7 +71,9 @@ body {
 }
 
 .reveal h3 {
-  font-size: 1.3em; }
+  font-size: 1.3em; 
+  color: darkcyan;
+  font-style: italic}
 
 .reveal h4 {
   font-size: 1em; }
