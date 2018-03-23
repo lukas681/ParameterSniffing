@@ -55,10 +55,20 @@ body {
   word-wrap: break-word; }
 
 .reveal h1 {
+  color: darkorchid;
   font-size: 2.5em; }
 
 .reveal h2 {
+  color: darkgoldenrod;
   font-size: 1.6em; }
+
+.reveal hr {
+ fill: white;
+ box-shadow: black;
+ text-shadow: black;
+ border-color: black;
+  height: 1px;
+}
 
 .reveal h3 {
   font-size: 1.3em; }
