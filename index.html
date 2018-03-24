@@ -105,7 +105,7 @@ EXEC tst @pid = 897</code></pre>
 
 				<section>
 					<!-- Explain Param Sniffing -->
-					<h2>Ausführungsplan</h2>
+					<h2>Histogram</h2>
 					<aside class="notes">
 						<ul>
 							<li>
@@ -176,7 +176,7 @@ GO</code></pre>
 				</section>
 				<section>
 					<!-- Optimize for typical Parameter -->
-					<h2>Optimierung für typischen Parameter</h2>
+					<h3>Optimierung für typischen Parameter</h3>
 					<aside class="notes">
 						<ul>
 							<li>
@@ -184,34 +184,145 @@ GO</code></pre>
 							</li>
 						</ul>
 					</aside>
-
+					<pre><code>
+ALTER PROCEDURE tst (@pid int)
+AS
+SELECT * FROM Sales.SalesOrderDetail
+WHERE ProductID = @pid
+OPTION (OPTIMIZE FOR (@pid = 897))
+					</code></pre>
 					<ul>
-
+						<li>
+							Seit 2005:
+							<b>OPTIMIZE FOR</b>
+						</li>
+						<li>
+							Ausführungsplan wird bei erstem Lauf auf Basis dieses Parameters erstellt
+						</li>
 					</ul>
 
 				</section>
-			</section>
 
+				<section>
+					<!-- Optimize for typical Parameter -->
+					<h3>Optimierung für jede Ausführung</h3>
+					<aside class="notes">
+						<ul>
+							<li>
+								Wir haben nur etwa 1000 pages...
+							</li>
+						</ul>
+					</aside>
+					<pre><code>
+ALTER PROCEDURE tst (@pid int)
+AS
+SELECT * FROM Sales.SalesOrderDetail
+WHERE ProductID = @pid
+OPTION (RECOMPILE)
+						</code></pre>
+					<ul>
+						<li>
+							Wenn beste Performance für Query erwünscht,
+							<b>RECOMPILE</b>
+						</li>
+						<li>
+							Problem: Sehr (Optimierungs)kostenintensiv
+						</li>
+					</ul>
+				</section>
+				<section>
+					<!-- Optimize for typical Parameter -->
+					<h3>Lokale Variablen</h3>
+					<aside class="notes">
+						<ul>
+							<li>
+
+							</li>
+						</ul>
+					</aside>
+					<pre><code>
+ALTER PROCEDURE tst (@pid int)
+AS
+DECLARE @p int = @pid
+SELECT * FROM Sales.SalesOrderDetail
+WHERE ProductID = @p
+					</code></pre>
+					<ul>
+						<li>
+							Lokale Variablen deaktivieren Parameter Sniffing
+						</li>
+						<li>
+							Erzeugt damit konsistenten Ausführungsplan.
+						</li>
+					</ul>
+				</section>
+<section>
+					<!-- Optimize for typical Parameter -->
+				<section>
+						<!-- Optimize for typical Parameter -->
+						<h3>OPTIMIZE FOR UNKNOWN</h3>
+						<aside class="notes">
+							<ul>
+								<li>
+	
+								</li>
+							</ul>
+						</aside>
+						<pre><code>
+ALTER PROCEDURE tst (@pid int)
+AS
+SELECT * FROM Sales.SalesOrderDetail
+WHERE ProductID = @pid
+OPTION (OPTIMIZE FOR UNKOWN)
+						</code></pre>
+						<ul>
+							<li>
+								Verhält sich, als ob Variablenwert zur Runtime unbekannt
+							</li>
+							<li>
+								Selbe Eigenschaften wie lokale Variablen
+							</li>
+						</ul>
+					</section>				
+
+			</section>
+			</section>
+			<section>
+				<h3>Zusammenfassung</h3>
+				<small>
+					<p>
+						<ul>
+							<li>
+								Parameter Sniffing bei ungleicher Datenverteilung eine Herausforderung
+							</li>
+							<li>
+								Caching des ersten Ausführungsplans kann bei anderen Eingaben zu Problemen führen
+							</li>
+							<li>
+								Lösungsansätze
+								<ul>
+									<li>
+										Optimierung für typischen Parameter 
+										<br>(OPTIMIZE FOR)
+									</li>
+									<li>
+										Optimierung für jede Ausführung 
+										<br>(RECOMPILE)
+									</li>
+									<li>
+										Nutzung lokaler Variablen / Für Unbekannt optimieren 
+										<br>(AS DECLARE @p = @pid oder OPTIMIZE FOR UNKNOWN)
+									</li>
+
+								</ul>
+							</li>
+						</ul>
+					</p>
+				</small>
+			</section>
 			<section>
 				<!-- Fragen -->
 				<h1 style="font-size: 470px">?</h1>
-			</section>
-			<section data-markdown>
-				<script type="text/template">
-					# Das ist ein Test
-					## Das auch
-					### Nochmal
-					### Kurz
-					Ich schreibe hier etwas Text hinein
-					[Test](Link)
-				
-					```SQL
-					SELECT * 
-					FROM dbo_Test
-					WHERE x = 3
-					ORDER BY a DESC;
-					```
-				</script>
 			</section>
 		</div>
 	</div>
