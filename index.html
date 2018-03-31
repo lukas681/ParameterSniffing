@@ -247,6 +247,37 @@ OPTION (RECOMPILE)
 					</ul>
 				</section>
 				<section>
+						<!-- Optimize for typical Parameter -->
+						<h3>Dynamischer Code</h3>
+						<aside class="notes">
+							<ul>
+								<li>
+									Speichern in Variable, Nicht getesteste Beispiel
+								</li>
+							</ul>
+						</aside>
+						<pre><code>
+ALTER PROCEDURE tst (@pid int)
+AS
+DECLARE @sql_cmd NVARCHAR(256) = N'SELECT * 
+FROM Sales.SalesOrderDetail
+WHERE ProductID = ' + QUOTENAME(@pid, '''');
+EXEC (@sql_cmd);
+GO
+						</code></pre>
+						<ul>
+							<li class="fragment fade-up">
+								Speichern der Abfrage in einer Variable
+							</li>
+							<li class="fragment fade-up">
+								Ausführen mittels EXEC-Befehl
+							</li>
+							<li class="fragment fade-up">
+								-> Erstellen von individuellen Ausführungsplänen pro Eingabe
+							</li>
+						</ul>
+					</section>
+				<section>
 					<!-- Optimize for typical Parameter -->
 					<h3>Lokale Variablen</h3>
 					<aside class="notes">
@@ -304,37 +335,7 @@ OPTION (OPTIMIZE FOR UNKNOWN)
 						</ul>
 					</section>				
 					</section>
-					<section>
-							<!-- Optimize for typical Parameter -->
-							<h3>Dynamischer Code</h3>
-							<aside class="notes">
-								<ul>
-									<li>
-										Speichern in Variable, Nicht getesteste Beispiel
-									</li>
-								</ul>
-							</aside>
-							<pre><code>
-ALTER PROCEDURE tst (@pid int)
-AS
-	DECLARE @sql_cmd NVARCHAR(256) = N'SELECT * 
-	FROM Sales.SalesOrderDetail
-	WHERE ProductID = ' + QUOTENAME(@pid, '''');
-	EXEC (@sql_cmd);
-GO
-							</code></pre>
-							<ul class="fragement fade-up">
-								<li>
-									Speichern der Abfrage in einer Variable
-								</li>
-								<li>
-									Ausführen mittels EXEC-Befehl
-								</li>
-								<li>
-									-> Erstellen von individuellen Ausführungsplänen pro Eingabe
-								</li>
-							</ul>
-						</section>
+				
 			</section>
 			</section>
 			<section>
@@ -389,8 +390,8 @@ GO
 				<ul>
 					<li>http://www.db-berater.de/2016/09/parameter-sniffing-loesungsansaetze/ <br>	(24.03.2018)</li>
 					<li>http://www.itprotoday.com/microsoft-sql-server/pros-and-cons-parameter-sniffing <br> (22.03.2018)</li>
-					<li>https://www.youtube.com/watch?v=qo9iWKYqJDA <br> (30.03.2018)</li>
-					<li>MS SQL  Server 2014 Query Tuning & Optimization - Benjamin Nevarez <br>Version (07.10.2014)</li>
+					<li>https://www.youtube.com/watch?v=qo9iWKYqJDA <br> (28.03.2018)</li>
+					<li>MS SQL  Server 2014 Query Tuning & Optimization - Benjamin Nevarez <br>Stand (07.10.2014)</li>
 				</ul>	
 			</small>
 				<!-- Fragen -->
