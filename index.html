@@ -35,9 +35,14 @@
 						<b>Lukas Retschmeier</b> &
 						<b>Adrian Steck</b>
 					</small>
+					<br>
+					<small>(
+							<b>1339518</b> &
+							<b>4727095</b>
+						)</small>
 				</p>
 				<p>
-					<small>Am xx.xx.2018</small>
+					<small>Am 03.04.2018</small>
 				</p>
 			</section>
 			<section>
@@ -54,7 +59,7 @@
 							<li>Jede Execution</li>
 							<li>Lokale Variablen</li>
 							<li>Optimize for Unknown</li>
-							<li>Disable Parameter Sniffing</li>
+							<li>Dynamischer Code</li>
 						</ol>
 					</li>
 				</ol>
@@ -63,7 +68,7 @@
 				<section>
 					<!-- Explain Param Sniffing -->
 					<h2>Parameter Sniffing</h2>
-					<hr>
+						<hr>
 					<aside class="notes">
 						<ul>
 							<li>
@@ -74,14 +79,18 @@
 					<!-- TODO Histogram Slide bottom -->
 					<p>
 						<ul>
-							<li>Finde optimalen Ausführungsplan für Stored Precudure</li>
-							<li>Schätzung einer Abfrage aufgrund Statistik-Histogram</li>
-							<li>Entscheidung durch Analyse der Abfrage Parameter</li>
+							
+							<li class="fragment fade-up">Finde optimalen Ausführungsplan für Stored Precudure</li>
+							<li class="fragment fade-up">Schätzung einer Abfrage aufgrund Statistik-Histogram</li>
+							<li class="fragment fade-up">Entscheidung durch Analyse der Abfrage Parameter</li>
 						</ul>
 					</p>
-					<p>
+					<p class="fragment fade-up"/>
 						=> Caching eines Ausführungsplans auf Basis des ersten Übergabeparameters!
 					</p>
+					<p class="fragment fade-up"/>
+						=> <b>Problem</b>: Bessere Pläne für andere Parameter 
+				</p>
 				</section>
 				<section>
 					<!-- Explain Param Sniffing -->
@@ -94,13 +103,13 @@
 						</ul>
 					</aside>
 					<!-- TODO Histogram Slide bottom -->
-					<pre><code>CREATE PROCEDURE tst (@pid int)
+					<pre class="fragment fade-up"><code>CREATE PROCEDURE tst (@pid int)
 AS
 SELECT * FROM Sales.SalesOrderDetail
 WHERE ProductID = @pid
 
 EXEC tst @pid = 897</code></pre>
-					<img src="media/execPlan1.jpg" />
+					<img class="fragment fade-up" src="media/execPlan1.jpg" />
 				</section>
 
 				<section>
@@ -113,13 +122,13 @@ EXEC tst @pid = 897</code></pre>
 							</li>
 						</ul>
 					</aside>
-					<pre><code>
+					<pre class="fragment fade-up"><code>
 SELECT COUNT(ProductID) as 'Count', ProductID 'Produkt'
 FROM Sales.SalesOrderDetail
 WHERE ProductID in (870, 897)
 GROUP BY  ProductID				
 						</code></pre>
-					<table>
+					<table class="fragment fade-up">
 						<tr>
 							<th>Count</th>
 							<th>Produkt</th>
@@ -147,14 +156,15 @@ GROUP BY  ProductID
 					</aside>
 					<pre><code>SET STATISTICS IO ON
 GO
-EXEC tst3 @pid =  870
+EXEC tst @pid =  870
 GO</code></pre>
 					<img src="media/execPlan2.png" />
 					<ul>
-						<li>Index Seek gecached</li>
-						<li>Etwa 1000 pages</li>
-						<li>14.000 reads = ~ 14x wie einfacher Table Scan</li>
-						<li>
+						<li class="fragment fade-up">14.000 logical reads</li>
+						<li class="fragment fade-up">Index Seek gecached</li>
+						<li class="fragment fade-up">Etwa 1000 pages</li>
+						<li class="fragment fade-up">14.000 reads = ~ 14x wie einfacher Table Scan</li>
+						<li class="fragment fade-up">
 							<b>Ineffizient!</b>
 						</li>
 					</ul>
@@ -180,8 +190,13 @@ GO</code></pre>
 					<aside class="notes">
 						<ul>
 							<li>
-								Wir haben nur etwa 1000 pages...
+								<b>Vorteil</b>: Für bestimmten Parameter ideal, unabhängig von Eingabewert
 							</li>
+							<li>
+							<b>Nachteil</b>: Für bestimmten Parameter ideal, unabhängig von Eingabewert
+							</li>
+							<li>OPTIMIZE for keword</li>
+							<li>Speicherung für diesen Parameter</li>
 						</ul>
 					</aside>
 					<pre><code>
@@ -192,11 +207,11 @@ WHERE ProductID = @pid
 OPTION (OPTIMIZE FOR (@pid = 897))
 					</code></pre>
 					<ul>
-						<li>
+						<li class="fragment fade-up">
 							Seit 2005:
 							<b>OPTIMIZE FOR</b>
 						</li>
-						<li>
+						<li class="fragment fade-up">
 							Ausführungsplan wird bei erstem Lauf auf Basis dieses Parameters erstellt
 						</li>
 					</ul>
@@ -209,8 +224,9 @@ OPTION (OPTIMIZE FOR (@pid = 897))
 					<aside class="notes">
 						<ul>
 							<li>
-								Wir haben nur etwa 1000 pages...
+								+: 	Immer Optimaler Ausführungsplan
 							</li>
+							<li>-:Benötigt jedes mal Zeit, den Plan zu berechnen</li>
 						</ul>
 					</aside>
 					<pre><code>
@@ -221,11 +237,11 @@ WHERE ProductID = @pid
 OPTION (RECOMPILE)
 						</code></pre>
 					<ul>
-						<li>
+						<li class="fragment fade-up">
 							Wenn beste Performance für Query erwünscht,
 							<b>RECOMPILE</b>
 						</li>
-						<li>
+						<li class="fragment fade-up">
 							Problem: Sehr (Optimierungs)kostenintensiv
 						</li>
 					</ul>
@@ -248,10 +264,10 @@ SELECT * FROM Sales.SalesOrderDetail
 WHERE ProductID = @p
 					</code></pre>
 					<ul>
-						<li>
+						<li class="fragment fade-up">
 							Lokale Variablen deaktivieren Parameter Sniffing
 						</li>
-						<li>
+						<li class="fragment fade-up">
 							Erzeugt damit konsistenten Ausführungsplan.
 						</li>
 					</ul>
@@ -276,15 +292,46 @@ WHERE ProductID = @pid
 OPTION (OPTIMIZE FOR UNKOWN)
 						</code></pre>
 						<ul>
-							<li>
+							<li class="fragment fade-up">
 								Verhält sich, als ob Variablenwert zur Runtime unbekannt
 							</li>
-							<li>
+							<li class="fragment fade-up">
 								Selbe Eigenschaften wie lokale Variablen
 							</li>
 						</ul>
 					</section>				
-
+					</section>
+					<section>
+							<!-- Optimize for typical Parameter -->
+							<h3>Dynamischer Code</h3>
+							<aside class="notes">
+								<ul>
+									<li>
+										Speichern in Variable, Nicht getesteste Beispiel
+									</li>
+								</ul>
+							</aside>
+							<pre><code>
+CREATE PROCEDURE tsts (@pid int)
+AS
+	DECLARE @sql_cmd NVARCHAR(256) = N'SELECT * 
+	FROM Sales.SalesOrderDetail
+	WHERE ProductID = ' + QUOTENAME(@pid, '''');
+	EXEC (@sql_cmd);
+GO
+							</code></pre>
+							<ul class="fragement fade-up">
+								<li>
+									Speichern der Abfrage in einer Variable
+								</li>
+								<li>
+									Ausführen mittels EXEC-Befehl
+								</li>
+								<li>
+									-> Erstellen von individuellen Ausführungsplänen pro Eingabe
+								</li>
+							</ul>
+						</section>
 			</section>
 			</section>
 			<section>
@@ -296,7 +343,7 @@ OPTION (OPTIMIZE FOR UNKOWN)
 								Parameter Sniffing bei ungleicher Datenverteilung eine Herausforderung
 							</li>
 							<li>
-								Caching des ersten Ausführungsplans kann bei anderen Eingaben zu Problemen führen
+								Caching des ersten Ausführungsplans einer Stored Procedure kann bei anderen Eingaben zu Problemen führen
 							</li>
 							<li>
 								Lösungsansätze
@@ -313,7 +360,10 @@ OPTION (OPTIMIZE FOR UNKOWN)
 										Nutzung lokaler Variablen / Für Unbekannt optimieren 
 										<br>(AS DECLARE @p = @pid oder OPTIMIZE FOR UNKNOWN)
 									</li>
-
+									<li>
+										Dynamischer Code: Speichern der Abfrage in lokaler Variable
+										<br>DECLARE/SET</br>
+									</li>
 								</ul>
 							</li>
 						</ul>
