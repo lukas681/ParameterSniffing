@@ -251,9 +251,10 @@ OPTION (RECOMPILE)
 					<h3>Lokale Variablen</h3>
 					<aside class="notes">
 						<ul>
-							<li>
-
-							</li>
+							<li>Parameterspeicherung lokal</li>#
+							<li>Konsistenter Ausführungsplan, da Density Vektor benutt wird</li>
+							<li>+:Konsistent, Deaktiviert PS</li>
+							<li>-:Kein Optimaler Ausführungsplan, Mehr Speicherplatzverbrauch</li>
 						</ul>
 					</aside>
 					<pre><code>
@@ -270,6 +271,9 @@ WHERE ProductID = @p
 						<li class="fragment fade-up">
 							Erzeugt damit konsistenten Ausführungsplan.
 						</li>
+						<li class="fragment fade-up">
+							Nutzung des Density Vektors/Optimierung auf Mittelwert
+						</li>
 					</ul>
 				</section>
 <section>
@@ -279,9 +283,8 @@ WHERE ProductID = @p
 						<h3>OPTIMIZE FOR UNKNOWN</h3>
 						<aside class="notes">
 							<ul>
-								<li>
-	
-								</li>
+								<li>Selbe Eigenschaften wie Lokale Variablen</li>
+								<li></li>
 							</ul>
 						</aside>
 						<pre><code>
@@ -289,7 +292,7 @@ ALTER PROCEDURE tst (@pid int)
 AS
 SELECT * FROM Sales.SalesOrderDetail
 WHERE ProductID = @pid
-OPTION (OPTIMIZE FOR UNKOWN)
+OPTION (OPTIMIZE FOR UNKNOWN)
 						</code></pre>
 						<ul>
 							<li class="fragment fade-up">
@@ -312,7 +315,7 @@ OPTION (OPTIMIZE FOR UNKOWN)
 								</ul>
 							</aside>
 							<pre><code>
-CREATE PROCEDURE tsts (@pid int)
+ALTER PROCEDURE tst (@pid int)
 AS
 	DECLARE @sql_cmd NVARCHAR(256) = N'SELECT * 
 	FROM Sales.SalesOrderDetail
@@ -339,14 +342,23 @@ GO
 				<small>
 					<p>
 						<ul>
-							<li>
-								Parameter Sniffing bei ungleicher Datenverteilung eine Herausforderung
-							</li>
+							<li>Parameter Sniffing sorgt dafür, dass bei Abfragen der optimale Ausführungsplan für den ersten eingegeben Übergabeparameters verwendet wird.</li> 
+							<li>Dieser wird anhand der Kardinalität des Wertes bestimmt</li>
 							<li>
 								Caching des ersten Ausführungsplans einer Stored Procedure kann bei anderen Eingaben zu Problemen führen
 							</li>
 							<li>
-								Lösungsansätze
+								Parameter Sniffing bei ungleicher Datenverteilung eine Herausforderung
+							</li>
+							<li>Sniffing als Bug oder Feature? (Auswirkung müssen bei jeder Datenbank neu überdacht werden)</li>
+						</ul>
+					</p>
+				</small>
+			</section>
+			<section>
+					<h4>Lösungsansätze</h4>
+				<!-- Fragen --><small>
+
 								<ul>
 									<li>
 										Optimierung für typischen Parameter 
@@ -365,14 +377,18 @@ GO
 										<br>DECLARE/SET</br>
 									</li>
 								</ul>
-							</li>
-						</ul>
-					</p>
-				</small>
+							</small>
 			</section>
 			<section>
 				<!-- Fragen -->
 				<h1 style="font-size: 470px">?</h1>
+			</section>
+			<section>
+				<h3>Quellen</h3>
+				<ul>
+					<li></li>
+				</ul>	
+				<!-- Fragen -->
 			</section>
 		</div>
 	</div>
